@@ -1,89 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 love Chat 🌸</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink-bg: #ffe5ec;
+            --bubble-sent: #ff85a2;
+            --bubble-rcv: #f8ad9d;
+            --text-color: #4a4a4a;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--pink-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .container {
+            background: white;
+            width: 380px;
+            height: 550px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(255, 133, 162, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid white;
+        }
+
+        #login-screen {
+            padding: 40px 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        h2 { color: #ff4d6d; margin-bottom: 20px; }
+
+        input {
+            padding: 12px;
+            margin: 10px 0;
+            border: 2px solid #ffccd5;
+            border-radius: 15px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        button {
+            background: #ff758f;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        button:hover { background: #ff4d6d; }
+
+        #chat-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        header {
+            background: #ffb3c1;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #chat-box {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            background: #fffafa;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            margin: 5px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .sent {
+            align-self: flex-end;
+            background: var(--bubble-sent);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .received {
+            align-self: flex-start;
+            background: var(--bubble-rcv);
+            color: white;
+            border-bottom-left-radius: 4px;
+        }
+
+        .footer {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            background: white;
+        }
+
+        #msg-input { flex: 1; margin: 0; }
+        .user-tag { font-size: 10px; margin-bottom: 2px; opacity: 0.8; }
+        .time-tag { font-size: 8px; opacity: 0.6; display: block; margin-top: 4px; text-align: right; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="login-screen">
+        <h2>Lovely Login 🐾</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="handleLogin()">Enter Chat ✨</button>
+        <p id="error-msg" style="color: #ff4d6d; font-size: 12px; display: none;">Oops! Wrong info, sweetie.</p>
+    </div>
+
+    <div id="chat-screen">
+        <header>
+            <span id="display-user">User</span>
+            <button onclick="location.reload()" style="padding: 5px 10px; font-size: 10px; margin: 0;">Logout</button>
+        </header>
+        <div id="chat-box"></div>
+        <div class="footer">
+            <input type="text" id="msg-input" placeholder="Type a message...">
+            <button onclick="sendMessage()" style="margin: 0;">💖</button>
+        </div>
+    </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
 <script>
-    // --- STEP 1: Replace this with your actual Firebase Config ---
+    // Your updated config from the screenshot
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT.firebaseapp.com",
-        databaseURL: "https://YOUR_PROJECT.firebaseio.com",
-        projectId: "YOUR_PROJECT",
-        storageBucket: "YOUR_PROJECT.appspot.com",
-        messagingSenderId: "YOUR_ID",
-        appId: "YOUR_APP_ID"
+        apiKey: "AIzaSyC7ihEC108GG-FL7cJWidiC4uc2B-7kv_Y",
+        authDomain: "msgl-157b0.firebaseapp.com",
+        projectId: "msgl-157b0",
+        storageBucket: "msgl-157b0.firebasestorage.app",
+        messagingSenderId: "862235386858",
+        appId: "1:862235386858:web:c2123cb0c7405d1fba0893",
+        measurementId: "G-2LNL5C57VZ",
+        databaseURL: "https://msgl-157b0-default-rtdb.firebaseio.com"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     const messagesRef = database.ref('messages');
 
-    const users = {
-        "daman": "Hulk4551622",
-        "lipsy": "mandeep"
-    };
-
+    const users = { "daman": "Hulk4551622", "lipsy": "mandeep" };
     let currentUser = "";
 
     function handleLogin() {
         const userInp = document.getElementById('username').value.toLowerCase();
         const passInp = document.getElementById('password').value;
-        const errorMsg = document.getElementById('error-msg');
-
         if (users[userInp] && users[userInp] === passInp) {
             currentUser = userInp;
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('chat-screen').style.display = 'flex';
             document.getElementById('display-user').innerText = "Hi, " + currentUser.charAt(0).toUpperCase() + currentUser.slice(1) + "! 🌸";
-            
-            // Start listening for messages after login
+            document.getElementById('chat-box').innerHTML = "";
             listenForMessages();
         } else {
-            errorMsg.style.display = 'block';
+            document.getElementById('error-msg').style.display = 'block';
         }
     }
 
-    // --- STEP 2: Send message to the Cloud Database ---
     function sendMessage() {
         const input = document.getElementById('msg-input');
         const text = input.value.trim();
-        
         if (text !== "") {
             messagesRef.push({
                 sender: currentUser,
                 text: text,
-                timestamp: Date.now()
+                timestamp: firebase.database.ServerValue.TIMESTAMP
             });
             input.value = "";
         }
     }
 
-    // --- STEP 3: Listen for messages from the other user ---
     function listenForMessages() {
-        messagesRef.on('child_added', (snapshot) => {
+        messagesRef.limitToLast(50).on('child_added', (snapshot) => {
             const data = snapshot.val();
-            displayMessage(data.sender, data.text);
+            const chatBox = document.getElementById('chat-box');
+            const msgDiv = document.createElement('div');
+            const isMe = (data.sender === currentUser);
+            
+            msgDiv.classList.add('message', isMe ? 'sent' : 'received');
+            const time = data.timestamp ? new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "";
+            
+            msgDiv.innerHTML = `
+                <div class="user-tag">${isMe ? "Me" : data.sender}</div>
+                <div>${data.text}</div>
+                <span class="time-tag">${time}</span>
+            `;
+            chatBox.appendChild(msgDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
         });
-    }
-
-    function displayMessage(sender, text) {
-        const chatBox = document.getElementById('chat-box');
-        const msgDiv = document.createElement('div');
-        
-        // Check if the message is from 'me' or the 'other'
-        const isMe = sender === currentUser;
-        msgDiv.classList.add('message', isMe ? 'sent' : 'received');
-        
-        msgDiv.innerHTML = `
-            <div class="user-tag">${isMe ? 'Me' : sender}</div>
-            <div>${text}</div>
-        `;
-        
-        chatBox.appendChild(msgDiv);
-        chatBox.scrollTop = chatBox.scrollHeight;
     }
 
     document.getElementById('msg-input').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') sendMessage();
     });
 </script>
+
+</body>
+</html>
