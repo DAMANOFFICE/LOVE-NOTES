@@ -3,210 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lovely Chat 🌸</title>
+    <title>🌸 love Chat 🌸</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-pink: #ffafcc;
-            --soft-purple: #cdb4db;
-            --accent-pink: #ff85a2;
-            --bg-cream: #fff5f8;
+            --pink-bg: #ffe5ec;
+            --bubble-sent: #ff85a2;
+            --bubble-rcv: #f8ad9d;
+            --text-color: #4a4a4a;
         }
 
         body {
             font-family: 'Quicksand', sans-serif;
-            background-color: var(--bg-cream);
+            background-color: var(--pink-bg);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            color: var(--text-color);
         }
 
-        /* Login Styling */
-        .card {
+        .container {
             background: white;
-            padding: 2rem;
+            width: 380px;
+            height: 550px;
             border-radius: 30px;
-            box-shadow: 0 10px 25px rgba(255, 175, 204, 0.3);
-            width: 350px;
-            text-align: center;
+            box-shadow: 0 10px 30px rgba(255, 133, 162, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 4px solid white;
         }
 
-        h2 { color: var(--accent-pink); margin-bottom: 1.5rem; }
+        /* Login Screen */
+        #login-screen {
+            padding: 40px 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+        }
+
+        h2 { color: #ff4d6d; margin-bottom: 20px; }
 
         input {
-            width: 90%;
             padding: 12px;
             margin: 10px 0;
-            border: 2px solid var(--soft-purple);
+            border: 2px solid #ffccd5;
             border-radius: 15px;
             outline: none;
+            font-family: inherit;
         }
 
         button {
-            background-color: var(--primary-pink);
+            background: #ff758f;
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 20px;
+            padding: 12px;
+            border-radius: 15px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: bold;
+            margin-top: 10px;
             transition: 0.3s;
-            margin: 5px;
         }
 
-        button:hover { background-color: var(--accent-pink); }
+        button:hover { background: #ff4d6d; }
 
-        /* Chat Layout */
+        /* Chat Screen */
         #chat-screen {
             display: none;
-            width: 400px;
-            height: 600px;
             flex-direction: column;
+            height: 100%;
         }
 
-        #messages {
-            flex: 1;
-            overflow-y: auto;
+        header {
+            background: #ffb3c1;
             padding: 15px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 25px;
-            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #chat-box {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
+            background: #fffafa;
         }
 
-        .msg-bubble {
-            max-width: 70%;
+        .message {
+            max-width: 75%;
             padding: 10px 15px;
-            border-radius: 18px;
+            border-radius: 20px;
             margin: 5px 0;
-            font-size: 0.9rem;
-            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.4;
         }
 
         .sent {
             align-self: flex-end;
-            background: var(--primary-pink);
+            background: var(--bubble-sent);
             color: white;
-            border-bottom-right-radius: 2px;
+            border-bottom-right-radius: 4px;
         }
 
         .received {
             align-self: flex-start;
-            background: white;
-            color: #555;
-            border: 1px solid var(--soft-purple);
-            border-bottom-left-radius: 2px;
+            background: var(--bubble-rcv);
+            color: white;
+            border-bottom-left-radius: 4px;
         }
 
-        .input-group { display: flex; gap: 10px; }
+        .footer {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            background: white;
+        }
+
         #msg-input { flex: 1; margin: 0; }
+        
+        .user-tag { font-size: 10px; margin-bottom: 2px; opacity: 0.8; }
     </style>
 </head>
 <body>
 
-    <div id="auth-screen" class="card">
-        <h2>Sweet Messenger ✨</h2>
-        <input type="email" id="email" placeholder="Email (sweetie@love.com)">
+<div class="container">
+    <div id="login-screen">
+        <h2>Lovely Login 🐾</h2>
+        <input type="text" id="username" placeholder="Username">
         <input type="password" id="password" placeholder="Password">
-        <div>
-            <button id="btnLogin">Login</button>
-            <button id="btnSignup" style="background: var(--soft-purple);">Join</button>
-        </div>
+        <button onclick="handleLogin()">Enter Chat ✨</button>
+        <p id="error-msg" style="color: #ff4d6d; font-size: 12px; display: none;">Oops! Wrong info, sweetie.</p>
     </div>
 
-    <div id="chat-screen" class="card">
-        <h3 id="user-header" style="color: var(--accent-pink);">Lovely Chat</h3>
-        <div id="messages"></div>
-        <div class="input-group">
-            <input type="text" id="msg-input" placeholder="Say something sweet...">
-            <button id="btnSend">💖</button>
+    <div id="chat-screen">
+        <header>
+            <span id="display-user">User</span>
+            <button onclick="location.reload()" style="padding: 5px 10px; font-size: 10px; margin: 0;">Logout</button>
+        </header>
+        <div id="chat-box"></div>
+        <div class="footer">
+            <input type="text" id="msg-input" placeholder="Type a message...">
+            <button onclick="sendMessage()" style="margin: 0;">💖</button>
         </div>
-        <button onclick="location.reload()" style="font-size: 0.7rem; margin-top: 10px; background: none; color: #aaa;">Logout</button>
     </div>
+</div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+<script>
+    // 1. Hardcoded Users as simple variables
+    const users = {
+        "daman": "Hulk4551622",
+        "lipsy": "mandeep"
+    };
 
-        // Your Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyC7ihEC108GG-FL7cJWidiC4uc2B-7kv_Y",
-            authDomain: "msgl-157b0.firebaseapp.com",
-            projectId: "msgl-157b0",
-            storageBucket: "msgl-157b0.firebasestorage.app",
-            messagingSenderId: "862235386858",
-            appId: "1:862235386858:web:c2123cb0c7405d1fba0893"
-        };
+    let currentUser = "";
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
+    // 2. Login Logic
+    function handleLogin() {
+        const userInp = document.getElementById('username').value.toLowerCase();
+        const passInp = document.getElementById('password').value;
+        const errorMsg = document.getElementById('error-msg');
 
-        const authScreen = document.getElementById('auth-screen');
-        const chatScreen = document.getElementById('chat-screen');
-        const msgList = document.getElementById('messages');
-
-        // --- Authentication Logic ---
-        document.getElementById('btnSignup').onclick = () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            createUserWithEmailAndPassword(auth, email, pass).catch(err => alert(err.message));
-        };
-
-        document.getElementById('btnLogin').onclick = () => {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            signInWithEmailAndPassword(auth, email, pass).catch(err => alert(err.message));
-        };
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                authScreen.style.display = 'none';
-                chatScreen.style.display = 'flex';
-                loadMessages(user.uid);
-            }
-        });
-
-        // --- Chat Logic ---
-        async function sendMessage() {
-            const text = document.getElementById('msg-input').value;
-            if (!text.trim()) return;
-
-            await addDoc(collection(db, "chats"), {
-                text: text,
-                sender: auth.currentUser.uid,
-                email: auth.currentUser.email,
-                timestamp: serverTimestamp()
-            });
-            document.getElementById('msg-input').value = '';
+        if (users[userInp] && users[userInp] === passInp) {
+            currentUser = userInp;
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('chat-screen').style.display = 'flex';
+            document.getElementById('display-user').innerText = "Hi, " + currentUser.charAt(0).toUpperCase() + currentUser.slice(1) + "! 🌸";
+        } else {
+            errorMsg.style.display = 'block';
         }
+    }
 
-        document.getElementById('btnSend').onclick = sendMessage;
+    // 3. Chat Logic
+    function sendMessage() {
+        const input = document.getElementById('msg-input');
+        const text = input.value.trim();
         
-        // Send on Enter key
-        document.getElementById('msg-input').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
-        });
-
-        function loadMessages(currentUid) {
-            const q = query(collection(db, "chats"), orderBy("timestamp", "asc"));
-            onSnapshot(q, (snapshot) => {
-                msgList.innerHTML = '';
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const div = document.createElement('div');
-                    div.classList.add('msg-bubble');
-                    div.classList.add(data.sender === currentUid ? 'sent' : 'received');
-                    div.textContent = data.text;
-                    msgList.appendChild(div);
-                });
-                msgList.scrollTop = msgList.scrollHeight;
-            });
+        if (text !== "") {
+            const chatBox = document.getElementById('chat-box');
+            
+            // Create the bubble
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message', 'sent'); // In this local demo, your messages always look "sent"
+            
+            msgDiv.innerHTML = `<div class="user-tag">Me</div><div>${text}</div>`;
+            
+            chatBox.appendChild(msgDiv);
+            input.value = "";
+            
+            // Auto scroll to bottom
+            chatBox.scrollTop = chatBox.scrollHeight;
         }
-    </script>
+    }
+
+    // Allow Enter key to send
+    document.getElementById('msg-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') sendMessage();
+    });
+</script>
+
 </body>
 </html>
